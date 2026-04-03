@@ -1,0 +1,328 @@
+"""
+═══════════════════════════════════════════════════════════════════════
+E-COMMERCE - SISTEMA CON CONJUNTOS (LISTAS ENLAZADAS)
+PARCIAL COMPLETO COMENTADO
+═══════════════════════════════════════════════════════════════════════
+"""
+
+# ═══════════════════════════════════════════════════════════════════════
+# NODO
+# ═══════════════════════════════════════════════════════════════════════
+
+class Nodo:
+    def __init__(self, dato):
+        """
+        👉 CADA NODO TIENE:
+        1. Un dato (valor)
+        2. Un apuntador al siguiente nodo
+        """
+        self.dato = dato
+        self.sig = None
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# CONJUNTO (LISTA ENLAZADA)
+# ═══════════════════════════════════════════════════════════════════════
+
+class Conjunto:
+    def __init__(self):
+        """
+        👉 UN CONJUNTO ES:
+        - Una lista enlazada
+        - SIN elementos repetidos
+        """
+        self.cabeza = None
+
+
+    # ═══════════════════════════════════════════════════════════════════
+    # CONTIENE
+    # ═══════════════════════════════════════════════════════════════════
+
+    def contiene(self, dato):
+        """
+        👉 PARA BUSCAR UN ELEMENTO:
+
+        1. Recorrer la lista
+        2. Comparar nodo por nodo
+        3. Si lo encuentra → True
+        4. Si no → False
+        """
+        actual = self.cabeza
+
+        while actual:
+            if actual.dato == dato:
+                return True
+            actual = actual.sig
+
+        return False
+
+
+    # ═══════════════════════════════════════════════════════════════════
+    # AGREGAR (SIN DUPLICADOS)
+    # ═══════════════════════════════════════════════════════════════════
+
+    def agregar(self, dato):
+        """
+        👉 PARA INSERTAR EN UN CONJUNTO:
+
+        1. Verificar si ya existe (contiene)
+        2. Si NO existe → insertar al inicio
+        3. Si existe → NO hacer nada
+        """
+        if not self.contiene(dato):
+            nuevo = Nodo(dato)
+            nuevo.sig = self.cabeza
+            self.cabeza = nuevo
+
+
+    # ═══════════════════════════════════════════════════════════════════
+    # TAMAÑO
+    # ═══════════════════════════════════════════════════════════════════
+
+    def tamaño(self):
+        """
+        👉 PARA CONTAR ELEMENTOS:
+
+        1. Recorrer la lista
+        2. Incrementar contador
+        """
+        cont = 0
+        actual = self.cabeza
+
+        while actual:
+            cont += 1
+            actual = actual.sig
+
+        return cont
+
+
+    # ═══════════════════════════════════════════════════════════════════
+    # MOSTRAR
+    # ═══════════════════════════════════════════════════════════════════
+
+    def mostrar(self):
+        """
+        👉 PARA MOSTRAR:
+
+        1. Recorrer lista
+        2. Guardar en lista auxiliar
+        3. Retornar
+        """
+        elementos = []
+        actual = self.cabeza
+
+        while actual:
+            elementos.append(actual.dato)
+            actual = actual.sig
+
+        return elementos
+
+
+    # ═══════════════════════════════════════════════════════════════════
+    # UNIÓN
+    # ═══════════════════════════════════════════════════════════════════
+
+    def union(self, otro):
+        """
+        👉 UNIÓN (A ∪ B):
+
+        1. Crear nuevo conjunto
+        2. Insertar todos los de A
+        3. Insertar todos los de B (sin duplicar)
+        """
+        res = Conjunto()
+
+        actual = self.cabeza
+        while actual:
+            res.agregar(actual.dato)
+            actual = actual.sig
+
+        actual = otro.cabeza
+        while actual:
+            res.agregar(actual.dato)
+            actual = actual.sig
+
+        return res
+
+
+    # ═══════════════════════════════════════════════════════════════════
+    # INTERSECCIÓN
+    # ═══════════════════════════════════════════════════════════════════
+
+    def interseccion(self, otro):
+        """
+        👉 INTERSECCIÓN (A ∩ B):
+
+        1. Recorrer A
+        2. Verificar si está en B
+        3. Si está → agregar
+        """
+        res = Conjunto()
+        actual = self.cabeza
+
+        while actual:
+            if otro.contiene(actual.dato):
+                res.agregar(actual.dato)
+            actual = actual.sig
+
+        return res
+
+
+    # ═══════════════════════════════════════════════════════════════════
+    # DIFERENCIA
+    # ═══════════════════════════════════════════════════════════════════
+
+    def diferencia(self, otro):
+        """
+        👉 DIFERENCIA (A - B):
+
+        1. Recorrer A
+        2. Si NO está en B → agregar
+        """
+        res = Conjunto()
+        actual = self.cabeza
+
+        while actual:
+            if not otro.contiene(actual.dato):
+                res.agregar(actual.dato)
+            actual = actual.sig
+
+        return res
+
+
+    # ═══════════════════════════════════════════════════════════════════
+    # DIFERENCIA SIMÉTRICA
+    # ═══════════════════════════════════════════════════════════════════
+
+    def diferencia_simetrica(self, otro):
+        """
+        👉 DIFERENCIA SIMÉTRICA:
+
+        (A - B) ∪ (B - A)
+        """
+        return self.diferencia(otro).union(otro.diferencia(self))
+
+
+    # ═══════════════════════════════════════════════════════════════════
+    # SUBCONJUNTO
+    # ═══════════════════════════════════════════════════════════════════
+
+    def es_subconjunto(self, otro):
+        """
+        👉 SUBCONJUNTO (A ⊆ B):
+
+        1. Recorrer A
+        2. Si algún elemento NO está en B → False
+        3. Si todos están → True
+        """
+        actual = self.cabeza
+
+        while actual:
+            if not otro.contiene(actual.dato):
+                return False
+            actual = actual.sig
+
+        return True
+
+
+    # ═══════════════════════════════════════════════════════════════════
+    # ELIMINAR (RECURSIVO) 🔥
+    # ═══════════════════════════════════════════════════════════════════
+
+    def eliminar(self, dato):
+        """
+        👉 SI EL PROFESOR ME PIDE ELIMINAR RECURSIVO:
+
+        1. Validar (llamar función recursiva)
+        2. Reasignar cabeza
+        """
+        self.cabeza = self._eliminar_rec(self.cabeza, dato)
+
+
+    def _eliminar_rec(self, nodo, dato):
+        """
+        👉 LÓGICA RECURSIVA:
+
+        CASO BASE:
+        - Si nodo es None → retornar None
+
+        CASO ELIMINAR:
+        - Si nodo.dato == dato → saltar nodo
+
+        CASO RECURSIVO:
+        - Seguir con el siguiente nodo
+        """
+        if nodo is None:
+            return None
+
+        if nodo.dato == dato:
+            return nodo.sig
+
+        nodo.sig = self._eliminar_rec(nodo.sig, dato)
+        return nodo
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# DATOS
+# ═══════════════════════════════════════════════════════════════════════
+
+usuarios = {
+    "Ana": ["Laptop", "Mouse", "Teclado", "Audífonos"],
+    "Luis": ["Mouse", "Monitor", "Laptop", "Webcam"],
+    "Carlos": ["Laptop", "Mouse", "Teclado"],
+    "Diana": ["Tablet", "Audífonos", "Mouse"],
+}
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# CREAR SISTEMA
+# ═══════════════════════════════════════════════════════════════════════
+
+sistema = {}
+
+for nombre, productos in usuarios.items():
+    """
+    👉 PARA CADA USUARIO:
+
+    1. Crear conjunto vacío
+    2. Insertar productos
+    """
+    c = Conjunto()
+    for p in productos:
+        c.agregar(p)
+    sistema[nombre] = c
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# PRUEBAS
+# ═══════════════════════════════════════════════════════════════════════
+
+print("\nUsuarios:")
+for u, c in sistema.items():
+    print(f"{u}: {c.mostrar()}")
+
+
+# 👉 EJEMPLO INTERSECCIÓN
+print("\nIntersección Ana - Luis:")
+print(sistema["Ana"].interseccion(sistema["Luis"]).mostrar())
+
+
+# 👉 EJEMPLO UNIÓN
+print("\nUnión Ana - Luis:")
+print(sistema["Ana"].union(sistema["Luis"]).mostrar())
+
+
+# 👉 EJEMPLO DIFERENCIA
+print("\nDiferencia Ana - Luis:")
+print(sistema["Ana"].diferencia(sistema["Luis"]).mostrar())
+
+
+# 👉 EJEMPLO SUBCONJUNTO
+print("\n¿Carlos ⊆ Ana?:")
+print(sistema["Carlos"].es_subconjunto(sistema["Ana"]))
+
+
+# 👉 EJEMPLO ELIMINAR
+print("\nEliminar 'Mouse' de Ana:")
+sistema["Ana"].eliminar("Mouse")
+print(sistema["Ana"].mostrar())

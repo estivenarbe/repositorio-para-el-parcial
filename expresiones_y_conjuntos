@@ -1,0 +1,228 @@
+"""
+═══════════════════════════════════════════════════════════════════════════════
+                        QUIZ 2 - ESTRUCTURAS DE DATOS
+                                  EXAMEN G
+                    Sistema de Gestión de Estudiantes
+═══════════════════════════════════════════════════════════════════════════════
+
+CONTEXTO:
+---------
+Una universidad necesita gestionar estudiantes inscritos en cursos.
+
+Cada curso tiene un conjunto de estudiantes (sin duplicados).
+
+INSTRUCCIONES:
+--------------
+1. Usar conjuntos (set)
+2. Implementar operaciones entre conjuntos
+3. Validar datos de entrada
+4. Resolver consultas académicas
+5. Tiempo: 90 minutos
+"""
+
+
+class SistemaCursos:
+    def __init__(self):
+        """
+        👉 SI EL PROFESOR ME PIDE USAR CONJUNTOS:
+
+        1. Cada curso será un set
+        2. Uso diccionario para organizar cursos
+        """
+        self.cursos = {}
+
+    def crear_curso(self, nombre):
+        """
+        👉 CREAR CURSO:
+
+        1. Validar nombre
+        2. Crear set vacío
+        """
+
+        if not nombre:
+            raise ValueError("Nombre inválido")
+
+        if nombre in self.cursos:
+            raise ValueError("Curso ya existe")
+
+        self.cursos[nombre] = set()
+
+    def agregar_estudiante(self, curso, estudiante):
+        """
+        👉 AGREGAR:
+
+        1. Validar curso
+        2. Usar add()
+        """
+
+        if curso not in self.cursos:
+            raise ValueError("Curso no existe")
+
+        if not estudiante:
+            raise ValueError("Estudiante inválido")
+
+        self.cursos[curso].add(estudiante)
+
+    def estudiantes_comunes(self, curso1, curso2):
+        """
+        👉 INTERSECCIÓN:
+
+        A ∩ B
+        """
+
+        return self.cursos[curso1] & self.cursos[curso2]
+
+    def todos_estudiantes(self, curso1, curso2):
+        """
+        👉 UNIÓN:
+
+        A ∪ B
+        """
+
+        return self.cursos[curso1] | self.cursos[curso2]
+
+    def solo_en_curso(self, curso1, curso2):
+        """
+        👉 DIFERENCIA:
+
+        A - B
+        """
+
+        return self.cursos[curso1] - self.cursos[curso2]
+
+    def verificar_subconjunto(self, curso1, curso2):
+        """
+        👉 RELACIÓN:
+
+        A ⊆ B
+        """
+
+        return self.cursos[curso1] <= self.cursos[curso2]
+
+    def son_disjuntos(self, curso1, curso2):
+        """
+        👉 DISJUNTOS:
+
+        No tienen elementos en común
+        """
+
+        return self.cursos[curso1].isdisjoint(self.cursos[curso2])
+
+    def mostrar(self):
+        for curso, estudiantes in self.cursos.items():
+            print(f"{curso}: {estudiantes}")
+
+
+# ================== PRUEBAS ==================
+if __name__ == "__main__":
+    sistema = SistemaCursos()
+
+    sistema.crear_curso("Matematicas")
+    sistema.crear_curso("Programacion")
+
+    sistema.agregar_estudiante("Matematicas", "Juan")
+    sistema.agregar_estudiante("Matematicas", "Ana")
+
+    sistema.agregar_estudiante("Programacion", "Ana")
+    sistema.agregar_estudiante("Programacion", "Carlos")
+
+    print("\n📋 Cursos:")
+    sistema.mostrar()
+
+    print("\n🔗 Comunes:", sistema.estudiantes_comunes("Matematicas", "Programacion"))
+    print("🌐 Todos:", sistema.todos_estudiantes("Matematicas", "Programacion"))
+    print("❌ Solo en Mat:", sistema.solo_en_curso("Matematicas", "Programacion"))
+    print("📌 Subconjunto:", sistema.verificar_subconjunto("Matematicas", "Programacion"))
+    print("🚫 Disjuntos:", sistema.son_disjuntos("Matematicas", "Programacion"))
+"""
+═══════════════════════════════════════════════════════════════════════════════
+                        QUIZ 2 - ESTRUCTURAS DE DATOS
+                                  EXAMEN H
+                    Sistema de Análisis de Texto
+═══════════════════════════════════════════════════════════════════════════════
+
+CONTEXTO:
+---------
+Debes analizar textos usando conjuntos para comparar palabras.
+
+INSTRUCCIONES:
+--------------
+1. Convertir textos a conjuntos
+2. Aplicar operaciones de conjuntos
+3. Validar entradas
+4. Implementar análisis completo
+5. Tiempo: 90 minutos
+"""
+
+
+class AnalizadorTexto:
+    def __init__(self, texto):
+        """
+        👉 SI EL PROFESOR ME PIDE PROCESAR TEXTO:
+
+        1. Validar texto
+        2. Convertir a minúsculas
+        3. Separar palabras
+        4. Convertir a set
+        """
+
+        if not texto:
+            raise ValueError("Texto vacío")
+
+        self.texto = texto
+        self.palabras = set(texto.lower().split())
+
+    def palabras_comunes(self, otro):
+        """
+        👉 INTERSECCIÓN
+        """
+
+        return self.palabras & otro.palabras
+
+    def palabras_unicas(self, otro):
+        """
+        👉 DIFERENCIA SIMÉTRICA
+        """
+
+        return self.palabras ^ otro.palabras
+
+    def solo_en_este(self, otro):
+        """
+        👉 DIFERENCIA
+        """
+
+        return self.palabras - otro.palabras
+
+    def es_subconjunto(self, otro):
+        """
+        👉 SUBCONJUNTO
+        """
+
+        return self.palabras <= otro.palabras
+
+    def son_disjuntos(self, otro):
+        """
+        👉 DISJUNTOS
+        """
+
+        return self.palabras.isdisjoint(otro.palabras)
+
+    def todas_palabras(self, otro):
+        """
+        👉 UNIÓN
+        """
+
+        return self.palabras | otro.palabras
+
+
+# ================== PRUEBAS ==================
+if __name__ == "__main__":
+    texto1 = AnalizadorTexto("python es un lenguaje de programacion")
+    texto2 = AnalizadorTexto("java es otro lenguaje de programacion")
+
+    print("\n🔗 Comunes:", texto1.palabras_comunes(texto2))
+    print("🌐 Todas:", texto1.todas_palabras(texto2))
+    print("❌ Solo en texto1:", texto1.solo_en_este(texto2))
+    print("⚡ Diferencia simétrica:", texto1.palabras_unicas(texto2))
+    print("📌 Subconjunto:", texto1.es_subconjunto(texto2))
+    print("🚫 Disjuntos:", texto1.son_disjuntos(texto2))
